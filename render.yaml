@@ -2,8 +2,12 @@ services:
   - type: web
     name: futureme
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn futureme.wsgi:application --bind 0.0.0.0:$PORT
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: |
+      python manage.py migrate
+      gunicorn futureme.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -19,6 +23,8 @@ services:
         fromDatabase:
           name: futureme-db
           property: connectionString
+      - key: DJANGO_SETTINGS_MODULE
+        value: futureme.settings
 
 databases:
   - name: futureme-db
