@@ -3,10 +3,10 @@ services:
     name: futureme
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn futureme.wsgi:application
+    startCommand: gunicorn futureme.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
-        value: 3.9.0
+        value: 3.11.0
       - key: SECRET_KEY
         generateValue: true
       - key: WEB_CONCURRENCY
