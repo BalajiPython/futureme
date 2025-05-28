@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Verify OTP - FutureSelf{% endblock %}
+
+{% block extra_css %}
+<style>
+.dark-mode .verify-button:hover {
+    background-color: #4a90e2;
+}
+
+.dark-mode .verification-result.success {
+    background-color: #1e3a29;
+    color: #5bcc7f;
+}
+
+.dark-mode .verification-result.error {
+    background-color: #3d2426;
+    color: #f86c75;
+}
+
+.dark-mode .verification-result.info {
+    background-color: #1e3238;
+    color: #5bc0de;
+}
+
+.dark-mode .verification-help {
+    border-top: 1px solid #444;
+}
+
+.dark-mode .verification-help a {
+    color: #6ab0ff;
+}
+</style>
+{% endblock %}
+
+{% block header %}
+<h1>Verify Your Account</h1>
+{% endblock %}
+
+{% block content %}
+<div class="verification-container">
+    <div class="verification-message">
+        <i class="fas fa-envelope verification-icon"></i>
+        <h2>Check Your Email</h2>
+        <p>We've sent a 6-digit verification code to your email.</p>
+        <p>Please enter it below to complete your registration.</p>
+    </div>
+    
+    <form id="otpForm" class="verification-form">
+        <div class="form-group">
+            <label for="email">Your Email</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email address">
+        </div>
+        
+        <div class="form-group">
+            <label for="otp_code">Verification Code</label>
+            <input type="text" id="otp_code" name="otp_code" maxlength="6" required placeholder="Enter 6-digit code">
+        </div>
+        
+        <button type="submit" class="verify-button">
+            <i class="fas fa-check-circle"></i> Verify Account
+        </button>
+    </form>
+    
+    <div id="message" class="verification-result"></div>
+    
+    <div class="verification-help">
+        <p>Didn't receive the code? <a href="#" id="resendOtp">Resend Code</a></p>
+        <p>Return to <a href="{% url 'login' %}">Login</a></p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('otpForm');
+        const messageDiv = document.getElementById('message');
+        const resendLink = document.getElementById('resendOtp');
+        
+        // Check URL parameters for pre-filled email
+        const urlParams = new URLSearchParams(window.location.search);
+        const emailParam = urlParams.get('email');
+        if (emailParam) {
+            document.getElementById('email').value = emailParam;
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            messageDiv.textContent = '';
+            messageDiv.className = 'verification-result';
+
+            const email = form.email.value.trim();
+            const otp_code = form.otp_code.value.trim();
+
+            try {
+                const response = await fetch('/api/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp_code }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.className = 'verification-result success';
+                    messageDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${data.message || 'Email verified successfully!'}`;
+                    
+                    // Redirect to login page after successful verification
+                    setTimeout(() => {
+                        window.location.href = '{% url "login" %}?verified=true';
+                    }, 2000);
+                } else {
+                    messageDiv.className = 'verification-result error';
+                    messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.detail || 'Verification failed.'}`;
+                }
+            } catch (error) {
+                messageDiv.className = 'verification-result error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> An error occurred. Please try again.';
+            }
+        });
+        
+        // Handle resend OTP functionality
+        resendLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            
+            if (!email) {
+                messageDiv.className = 'verification-result error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter your email address first.';
+                return;
+            }
+            
+            messageDiv.className = 'verification-result info';
+            messageDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Requesting new verification code...';
+            
+            try {
+                const response = await fetch('/api/resend-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email }),
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    messageDiv.className = 'verification-result success';
+                    messageDiv.innerHTML = `<i class="fas fa-check-circle"></i> ${data.message || 'New verification code sent!'}`;
+                } else {
+                    messageDiv.className = 'verification-result error';
+                    messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.detail || 'Failed to send new code.'}`;
+                }
+            } catch (error) {
+                messageDiv.className = 'verification-result error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> An error occurred. Please try again.';
+            }
+        });
+    });
+</script>
+{% endblock %}

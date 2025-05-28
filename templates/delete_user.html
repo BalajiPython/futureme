@@ -1,0 +1,354 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin - Delete User - FutureMe{% endblock %}
+
+{% block content %}
+<div class="auth-container" data-aos="fade-up">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2><i class="fas fa-user-shield"></i> Admin Panel</h2>
+            <p class="subtitle">Delete User Account</p>
+            <p class="admin-info">Logged in as: {{ request.user.email }}</p>
+            <div class="admin-links">
+                <a href="{% url 'admin:index' %}" class="admin-link">
+                    <i class="fas fa-cog"></i>
+                    Django Admin Panel
+                </a>
+            </div>
+        </div>
+
+        <div id="deleteError" class="error-message" style="display: none;"></div>
+        <div id="deleteSuccess" class="success-message" style="display: none;"></div>
+
+        <form id="deleteForm" class="auth-form" data-aos="fade-up" data-aos-delay="200">
+            {% csrf_token %}
+            
+            <div class="form-group" data-aos="fade-up" data-aos-delay="300">
+                <label for="email">Email to Delete</label>
+                <input type="email" id="email" name="email" required 
+                       placeholder="Enter the email to delete"
+                       class="form-control">
+            </div>
+
+            <div class="form-actions" data-aos="fade-up" data-aos-delay="500">
+                <button type="submit" class="btn-danger">
+                    <i class="fas fa-trash"></i>
+                    Delete User
+                </button>
+            </div>
+        </form>
+
+        <div class="admin-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Warning: This action cannot be undone. All user data will be permanently deleted.</p>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+.auth-card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: var(--primary-dark);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.auth-header h2 i {
+    color: var(--primary-color);
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.admin-info {
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: rgba(58, 110, 165, 0.1);
+    border-radius: var(--border-radius);
+}
+
+.admin-links {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.admin-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: all var(--transition-speed) ease;
+    white-space: nowrap;
+}
+
+.admin-link:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.auth-form {
+    margin-top: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+    color: var(--primary-dark);
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e1e1e1;
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(58, 110, 165, 0.2);
+    outline: none;
+}
+
+.form-actions {
+    margin-top: 2rem;
+}
+
+.btn-danger {
+    width: 100%;
+    padding: 1rem;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f8d7da;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.success-message {
+    color: #28a745;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #d4edda;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.admin-warning {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #fff3cd;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.admin-warning i {
+    color: #856404;
+    font-size: 1.2rem;
+}
+
+.admin-warning p {
+    color: #856404;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-container {
+        margin: 1rem auto;
+    }
+
+    .auth-card {
+        padding: 1.5rem;
+    }
+
+    .auth-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .admin-link {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .form-control {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .btn-danger {
+        padding: 0.875rem;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 1.25rem;
+    }
+
+    .auth-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .admin-info {
+        font-size: 0.85rem;
+    }
+
+    .form-group label {
+        font-size: 0.95rem;
+    }
+
+    .admin-warning {
+        padding: 0.875rem;
+    }
+
+    .admin-warning p {
+        font-size: 0.85rem;
+    }
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+    .admin-link,
+    .btn-danger {
+        min-height: 44px;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('deleteForm');
+    const errorDiv = document.getElementById('deleteError');
+    const successDiv = document.getElementById('deleteSuccess');
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        errorDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+        
+        const email = document.getElementById('email').value.trim();
+        
+        if (!email) {
+            errorDiv.textContent = 'Please enter an email address';
+            errorDiv.style.display = 'flex';
+            return;
+        }
+
+        // Confirm deletion
+        if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+            return;
+        }
+        
+        try {
+            const response = await fetch('/accounts/api/delete-user/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({
+                    email: email
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                successDiv.textContent = data.message;
+                successDiv.style.display = 'flex';
+                form.reset();
+            } else {
+                errorDiv.textContent = data.detail || 'Failed to delete user';
+                errorDiv.style.display = 'flex';
+            }
+        } catch (error) {
+            console.error('Delete user error:', error);
+            errorDiv.textContent = 'An error occurred. Please try again.';
+            errorDiv.style.display = 'flex';
+        }
+    });
+});
+</script>
+{% endblock %} 

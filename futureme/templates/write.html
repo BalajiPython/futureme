@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Write a Letter - FutureSelf{% endblock %}
+
+{% block header %}
+<h1>Write a Letter to Your Future Self</h1>
+<nav>
+    <a href="{% url 'dashboard' %}"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+    <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="write-intro">
+    <p>Write a message to your future self. What would you like to remember about today? What goals or dreams do you have? What advice would you give to your future self?</p>
+</div>
+
+<div class="write-container">
+    <form id="letterForm">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="title">Letter Title</label>
+            <input type="text" id="title" name="title" placeholder="Enter letter title" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="content">Your Message</label>
+            <textarea id="content" name="content" placeholder="Write your message here..." required></textarea>
+            <p class="form-help">You can use basic formatting like <strong>bold</strong>, <em>italic</em>, and lists.</p>
+        </div>
+        
+        <div class="form-group">
+            <label for="delivery_date">When should this letter be delivered?</label>
+            <input type="date" id="delivery_date" name="delivery_date" title="Select delivery date" required>
+            <input type="time" id="delivery_time" name="delivery_time" title="Select delivery time" required>
+            <p class="form-help">Choose a future date and time when you'd like to receive this letter. It must be at least 1 minute from now.</p>
+        </div>
+        
+        <button type="submit" class="btn-primary"><i class="fas fa-paper-plane"></i> Schedule Letter</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const dateInput = document.getElementById('delivery_date');
+    const timeInput = document.getElementById('delivery_time');
+    
+    function setMinDateTime() {
+        const now = new Date();
+        const minDateStr = now.toISOString().split('T')[0];
+        dateInput.min = minDateStr;
+        
+        if (dateInput.value === minDateStr) {
+            // If selected date is today, set min time to current time + 1 minute
+            const minTime = new Date(now.getTime() + 60000);
+            const hours = minTime.getHours().toString().padStart(2, '0');
+            const minutes = minTime.getMinutes().toString().padStart(2, '0');
+            timeInput.min = `${hours}:${minutes}`;
+        } else {
+            timeInput.min = '00:00';
+        }
+    }
+    
+    setMinDateTime();
+    
+    dateInput.addEventListener('change', setMinDateTime);
+    
+    document.getElementById('letterForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        
+        const deliveryDate = form.delivery_date.value;
+        const deliveryTime = form.delivery_time.value;
+        const deliveryDateTimeStr = new Date(`${deliveryDate}T${deliveryTime}:00`).toISOString();
+        
+        try {
+            const response = await fetch('/write/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify({
+                    title: form.title.value,
+                    content: form.content.value,
+                    delivery_date: deliveryDateTimeStr
+                })
+            });
+            
+            if (response.ok) {
+                window.location.href = '{% url "dashboard" %}';
+            } else {
+                alert('Failed to save letter');
+            }
+        } catch (error) {
+            alert('Failed to save letter');
+        }
+    });
+});
+</script>
+{% endblock %}

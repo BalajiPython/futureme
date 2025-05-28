@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Circle -->
+    <circle cx="100" cy="100" r="90" fill="#3a6ea5" opacity="0.15"/>
+    
+    <!-- Envelope -->
+    <path d="M40 60h120c5.523 0 10 4.477 10 10v60c0 5.523-4.477 10-10 10H40c-5.523 0-10-4.477-10-10V70c0-5.523 4.477-10 10-10z" 
+          fill="#3a6ea5" stroke="#3a6ea5" stroke-width="4"/>
+    
+    <!-- Letter Lines -->
+    <path d="M40 70l60 40 60-40" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Clock Hands -->
+    <line x1="100" y1="100" x2="100" y2="70" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <line x1="100" y1="100" x2="130" y2="100" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    
+    <!-- Clock Circle -->
+    <circle cx="100" cy="100" r="8" fill="white"/>
+</svg> 

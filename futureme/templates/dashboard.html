@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Your Dashboard - FutureSelf{% endblock %}
+
+{% block header %}
+<h1>Your Letters</h1>
+<nav>
+    <a href="{% url 'write_letter' %}"><i class="fas fa-pen"></i> Write a Letter</a>
+    <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-intro">
+    <h2>Your Time Capsule</h2>
+    <p>Here are all the letters you've written to your future self. Letters that have been delivered can be viewed in your email inbox.</p>
+</section>
+
+<div class="dashboard-actions">
+    <a href="{% url 'write_letter' %}" class="btn-primary"><i class="fas fa-pen"></i> Write New Letter</a>
+</div>
+
+<ul id="lettersList" class="letters-grid">
+    {% for letter in letters %}
+    <li class="letter-item">
+        <div class="letter-card {% if letter.is_delivered %}delivered{% endif %}">
+            <h3>{{ letter.title }}</h3>
+            <p class="delivery-date">
+                <i class="fas fa-calendar-alt"></i> 
+                Delivery date: {{ letter.delivery_date|date:"F j, Y" }}
+            </p>
+            <p class="status {{ letter.is_delivered|yesno:'delivered,pending' }}">
+                <i class="fas fa-{{ letter.is_delivered|yesno:'check-circle,clock' }}"></i>
+                Status: {{ letter.is_delivered|yesno:'Delivered,Pending' }}
+            </p>
+        </div>
+    </li>
+    {% empty %}
+    <p class="empty-message">You have no scheduled letters yet. Write one now!</p>
+    {% endfor %}
+</ul>
+{% endblock %}

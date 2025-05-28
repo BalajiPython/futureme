@@ -1,0 +1,281 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - FutureMe{% endblock %}
+
+{% block header %}
+<h1>Your Letters</h1>
+<nav>
+    <a href="{% url 'write_letter' %}"><i class="fas fa-pen"></i> Write a Letter</a>
+    <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h2><i class="fas fa-tachometer-alt"></i> My Dashboard</h2>
+        <p class="subtitle">Welcome to your personal dashboard</p>
+    </div>
+<div class="dashboard-actions">
+        <a href="{% url 'write_letter' %}" class="btn-primary">
+            <i class="fas fa-pen"></i> Write New Letter
+        </a>
+        <!-- <a href="{% url 'logout' %}" class="btn-secondary">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a> -->
+</div>
+    <div class="dashboard-letters">
+        {% if letters %}
+            <h3>Your Letters</h3>
+            <div class="letters-list">
+    {% for letter in letters %}
+                    <div class="letter-card">
+                        <div class="letter-header">
+                            <div class="letter-title">{{ letter.title }}</div>
+                            <div class="letter-status">
+                                {% if letter.is_delivered %}
+                                    <span class="status-badge status-delivered">
+                                        <i class="fas fa-check-circle"></i> Delivered
+                                    </span>
+                                {% elif letter.delivery_date|date:'Y-m-d' <= now|date:'Y-m-d' %}
+                                    <span class="status-badge status-pending">
+                                        <i class="fas fa-clock"></i> Pending Delivery
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-scheduled">
+                                        <i class="fas fa-calendar-check"></i> Scheduled
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="letter-info">
+                            <div class="letter-date">
+                <i class="fas fa-calendar-alt"></i> 
+                                Delivery Date: {{ letter.delivery_date|date:'M d, Y' }}
+                            </div>
+                            {% if letter.is_delivered %}
+                                <div class="delivery-info">
+                                    <i class="fas fa-envelope-open"></i>
+                                    Delivered on: {{ letter.delivery_date|date:'M d, Y' }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="letter-actions">
+                            <a href="{% url 'view_letter' letter.id %}" class="btn-view">View Letter</a>
+                        </div>
+        </div>
+    {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-letters">You haven't written any letters yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.dashboard-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    width: 100%;
+}
+.dashboard-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.dashboard-header h2 {
+    color: var(--primary-dark);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.dashboard-header h2 i {
+    color: var(--primary-color);
+}
+.subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+.dashboard-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+.btn-primary, .btn-secondary {
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all var(--transition-speed) ease;
+}
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+}
+.btn-secondary {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+.btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+}
+.dashboard-letters {
+    margin-top: 2rem;
+}
+.letters-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+.letter-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.letter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.letter-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: #666;
+    font-size: 0.95rem;
+}
+.letter-info i {
+    color: var(--primary-color);
+    margin-right: 0.5rem;
+}
+.delivery-info {
+    color: #155724;
+    font-weight: 500;
+}
+.delivery-info i {
+    color: #155724;
+}
+.letter-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.letter-date {
+    color: #666;
+    font-size: 0.95rem;
+}
+.letter-actions {
+    margin-top: 1rem;
+}
+.btn-view {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all var(--transition-speed) ease;
+}
+.btn-view:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+.no-letters {
+    text-align: center;
+    color: #888;
+    margin-top: 2rem;
+    text-overflow: hidden;
+}
+.letter-status {
+    margin-top: 0.5rem;
+}
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+.status-delivered {
+    background-color: #d4edda;
+    color: #155724;
+}
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+.status-scheduled {
+    background-color: #cce5ff;
+    color: #004085;
+}
+.status-badge i {
+    font-size: 1rem;
+}
+@media (max-width: 768px) {
+    .dashboard-header h2 {
+        font-size: 1.5rem;
+    }
+    .dashboard-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 0.875rem;
+        font-size: 1rem;
+    }
+    .letters-list {
+        grid-template-columns: 1fr;
+    }
+    .letter-card {
+        padding: 1rem;
+    }
+}
+@media (max-width: 480px) {
+    .dashboard-header h2 {
+        font-size: 1.2rem;
+    }
+    .dashboard-container {
+        padding: 0 0.5rem;
+    }
+    .letter-title {
+        font-size: 1rem;
+    }
+    .letter-date {
+        font-size: 0.85rem;
+    }
+}
+</style>
+{% endblock %}
