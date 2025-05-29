@@ -2,9 +2,7 @@ services:
   - type: web
     name: futureme
     env: python
-    buildCommand: |
-      pip install -r requirements.txt
-      python manage.py collectstatic --noinput
+    buildCommand: chmod +x build.sh && ./build.sh
     startCommand: gunicorn wsgi:application --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
