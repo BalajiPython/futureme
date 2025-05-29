@@ -40,6 +40,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+ROOT_URLCONF = 'futureme.urls'
+
 # Database configuration
 if 'DATABASE_URL' in os.environ:
     DATABASES = {
