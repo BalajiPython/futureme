@@ -3,7 +3,7 @@ services:
     name: futureme
     env: python
     buildCommand: chmod +x build.sh && ./build.sh
-    startCommand: gunicorn -c gunicorn_config.py
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0

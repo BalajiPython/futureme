@@ -13,4 +13,4 @@ accesslog = '-'
 access_log_format = '%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"'
 
 # WSGI application
-wsgi_app = 'futureme.wsgi:application' 
+wsgi_app = 'wsgi:application' 
