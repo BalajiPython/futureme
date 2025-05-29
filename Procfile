@@ -1,2 +1,2 @@
-web: cd futureme && gunicorn wsgi:application --bind 0.0.0.0:$PORT
-worker: cd futureme && python manage.py start_scheduler 
+web: gunicorn futureme.wsgi:application --bind 0.0.0.0:$PORT
+worker: python manage.py start_scheduler 
