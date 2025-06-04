@@ -2,12 +2,14 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
+import secrets
 
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+# Generate a secret key if not set in environment
+SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_urlsafe(50))
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Allow all hosts on Render
