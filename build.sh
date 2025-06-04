@@ -5,8 +5,9 @@ set -o errexit
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Create staticfiles directory if it doesn't exist
+# Create and set permissions for staticfiles directory
 mkdir -p staticfiles
+chmod 755 staticfiles
 
 # Run migrations in correct order
 python manage.py migrate auth
@@ -18,5 +19,5 @@ python manage.py migrate accounts
 python manage.py migrate letters
 python manage.py migrate
 
-# Collect static files
-python manage.py collectstatic --no-input 
+# Collect static files with force flag
+python manage.py collectstatic --no-input --clear 
