@@ -10,7 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'futureme.onrender.com,futureme-uwf5.onrender.com').split(',')
+# Ensure ALLOWED_HOSTS is set correctly
+ALLOWED_HOSTS = ['futureme.onrender.com', 'futureme-uwf5.onrender.com', 'localhost', '127.0.0.1']
+if os.getenv('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS.extend(os.getenv('ALLOWED_HOSTS').split(','))
 
 # Application definition
 INSTALLED_APPS = [
