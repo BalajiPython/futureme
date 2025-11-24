@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">{{ letter.title }}</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-3">
+                        Delivery Date: {{ letter.delivery_date|date:"F j, Y" }}
+                    </p>
+                    <div class="letter-content">
+                        {{ letter.content|linebreaks }}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

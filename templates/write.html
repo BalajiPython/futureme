@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Write a Letter - FutureMe{% endblock %}
+
+{% block content %}
+<div class="write-container" data-aos="fade-up">
+    <div class="write-card">
+        <div class="write-header">
+            <h2><i class="fas fa-pen"></i> Write to Your Future Self</h2>
+            <p class="subtitle">Express your thoughts, dreams, and aspirations</p>
+</div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="flash-message {% if message.tags %}flash-{{ message.tags }}{% endif %}" data-aos="fade-down">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form id="letterForm" method="POST" action="{% url 'write_letter' %}">
+        {% csrf_token %}
+        <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+                <label for="content">Content</label>
+                <textarea class="form-control" id="content" name="content" rows="10" required></textarea>
+        </div>
+        <div class="form-group">
+                <label for="delivery_date">Delivery Date</label>
+                <div class="date-time-inputs">
+                    <input type="date" class="form-control" id="delivery_date" name="delivery_date" required>
+                    <input type="time" class="form-control" id="delivery_time" name="delivery_time" required>
+                </div>
+                <small class="form-text">Choose when you want to receive this letter</small>
+        </div>
+            <input type="hidden" id="timezone_offset" name="timezone_offset" value="0">
+            <button type="submit" class="btn btn-primary">Schedule Letter</button>
+    </form>
+    </div>
+</div>
+
+<style>
+.write-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+.write-card {
+    background: var(--card-bg);
+    padding: 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.write-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.write-header h2 {
+    color: var(--primary-dark);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.write-header h2 i {
+    color: var(--primary-color);
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.write-form {
+    margin-top: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
+    color: var(--primary-dark);
+    font-weight: 500;
+}
+
+.form-group label i {
+    color: var(--primary-color);
+}
+
+.form-control {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #e1e1e1;
+    border-radius: var(--border-radius);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: all var(--transition-speed) ease;
+    resize: vertical;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(58, 110, 165, 0.2);
+    outline: none;
+}
+
+textarea.form-control {
+    min-height: 200px;
+}
+
+.form-text {
+    display: block;
+    margin-top: 0.5rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.form-actions {
+    margin-top: 2rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.flash-message {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.flash-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash-error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .write-container {
+        margin: 1rem auto;
+    }
+
+    .write-card {
+        padding: 1.5rem;
+    }
+
+    .write-header h2 {
+        font-size: 1.75rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .form-control {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .btn-primary {
+        padding: 0.875rem;
+        font-size: 1rem;
+    }
+
+    textarea.form-control {
+        min-height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .write-card {
+        padding: 1.25rem;
+    }
+
+    .write-header h2 {
+        font-size: 1.5rem;
+    }
+
+    .form-group label {
+        font-size: 0.95rem;
+    }
+
+    .form-text {
+        font-size: 0.85rem;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+    }
+
+    .date-time-inputs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+    .btn-primary {
+        min-height: 44px;
+    }
+
+    input[type="date"].form-control {
+        min-height: 44px;
+    }
+}
+
+.date-time-inputs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.date-time-inputs input {
+    flex: 1;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set timezone offset when page loads
+    document.getElementById('timezone_offset').value = new Date().getTimezoneOffset();
+    
+    // Set minimum date to today
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const hours = String(today.getHours()).padStart(2, '0');
+    const minutes = String(today.getMinutes()).padStart(2, '0');
+    
+    document.getElementById('delivery_date').min = `${year}-${month}-${day}`;
+    document.getElementById('delivery_time').min = `${hours}:${minutes}`;
+    
+    // Form submission
+    document.getElementById('letterForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+        const deliveryDate = document.getElementById('delivery_date').value;
+        const deliveryTime = document.getElementById('delivery_time').value;
+        const timezoneOffset = document.getElementById('timezone_offset').value;
+        
+        if (!title || !content || !deliveryDate || !deliveryTime) {
+            alert('Please fill in all fields');
+            return;
+        }
+        
+        // Create a Date object with the selected date and time in local timezone
+        const [hours, minutes] = deliveryTime.split(':');
+        const deliveryDateTime = new Date(deliveryDate);
+        deliveryDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        
+        // Ensure the date is at least 2 minutes in the future
+        const now = new Date();
+        const twoMinutesFromNow = new Date(now.getTime() + 2 * 60000);
+        
+        if (deliveryDateTime < twoMinutesFromNow) {
+            alert('Delivery time must be at least 2 minutes from now');
+            return;
+        }
+        
+        // Show loading state
+        const submitButton = this.querySelector('button[type="submit"]');
+        const originalText = submitButton.innerHTML;
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+        
+        // Submit the form data
+        fetch('{% url "write_letter" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                title: title,
+                content: content,
+                delivery_date: deliveryDateTime.toISOString(),
+                timezone_offset: parseInt(timezoneOffset)
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            // Redirect to confirmation page
+            window.location.href = '{% url "confirmation" %}';
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+            submitButton.disabled = false;
+            submitButton.innerHTML = originalText;
+        });
+    });
+    
+    // Function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %}

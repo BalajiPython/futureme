@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Register - FutureSelf{% endblock %}
+
+{% block header %}
+<h1>Create an Account</h1>
+{% endblock %}
+
+{% block content %}
+<form id="registerForm">
+    <input type="text" id="username" placeholder="Username" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button type="submit">Register</button>
+</form>
+<p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/scripts.js"></script>
+{% endblock %}

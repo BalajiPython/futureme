@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}FutureSelf - Write to your future self{% endblock %}
+
+{% block header %}
+<h1>Welcome to FutureSelf</h1>
+{% if not user.is_authenticated %}
+<nav>
+    <a href="{% url 'register' %}">Sign Up</a>
+    <a href="{% url 'login' %}">Login</a>
+</nav>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h2>Write letters to your future self</h2>
+    <p>Capture your thoughts, dreams, and goals today, and receive them at a time of your choosing in the future.</p>
+    {% if not user.is_authenticated %}
+    <div class="cta-buttons">
+        <a href="{% url 'register' %}" class="btn-primary"><i class="fas fa-user-plus"></i> Get Started</a>
+        <a href="{% url 'login' %}" class="btn-secondary"><i class="fas fa-sign-in-alt"></i> Log In</a>
+    </div>
+    {% else %}
+    <div class="cta-buttons">
+        <a href="{% url 'write_letter' %}" class="btn-primary"><i class="fas fa-pen"></i> Write Letter</a>
+        <a href="{% url 'dashboard' %}" class="btn-secondary"><i class="fas fa-envelope"></i> My Letters</a>
+    </div>
+    {% endif %}
+</section>
+
+<section class="features">
+    <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-envelope"></i></div>
+        <h3>Send Letters to Your Future Self</h3>
+        <p>Write messages today that will be delivered to your inbox at a date you choose in the future.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-lock"></i></div>
+        <h3>Private & Secure</h3>
+        <p>Your letters are stored securely and delivered only to you when the time comes.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon"><i class="fas fa-clock"></i></div>
+        <h3>Time Capsule</h3>
+        <p>Create digital time capsules to remind yourself of who you were and what you hoped to become.</p>
+    </div>
+</section>
+
+<section class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <h3>Create an Account</h3>
+            <p>Sign up with your email to get started.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <h3>Write Your Letter</h3>
+            <p>Pour your thoughts, dreams, and goals into a letter.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <h3>Set a Delivery Date</h3>
+            <p>Choose when you want to receive your letter in the future.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">4</div>
+            <h3>Receive Your Letter</h3>
+            <p>When the day comes, check your email for your letter from the past.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}

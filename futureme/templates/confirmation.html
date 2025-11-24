@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Letter Scheduled - FutureSelf{% endblock %}
+
+{% block header %}
+<h1>Your Letter is Scheduled!</h1>
+<nav>
+    <a href="{% url 'dashboard' %}"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="{% url 'write_letter' %}"><i class="fas fa-pen"></i> Write Another</a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="confirmation-content">
+    <div class="confirmation-icon">
+        <i class="fas fa-check-circle"></i>
+    </div>
+    
+    <h2>Success!</h2>
+    
+    <p class="confirmation-message">
+        Your letter has been scheduled for delivery on <span id="deliveryDate" class="highlight-text"></span>.
+    </p>
+    
+    <p>We'll send your message to your future self exactly as you wrote it today.</p>
+    
+    <div class="next-actions">
+        <a href="{% url 'write_letter' %}" class="btn-primary"><i class="fas fa-pen"></i> Write Another Letter</a>
+        <a href="{% url 'dashboard' %}" class="btn-secondary"><i class="fas fa-list"></i> View All Letters</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/scripts.js"></script>
+{% endblock %}

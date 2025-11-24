@@ -1,0 +1,393 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FutureMe - Write Letters to Your Future Self{% endblock %}
+
+{% block content %}
+<div class="hero-section" data-aos="fade-up">
+    <div class="hero-content">
+        <h1>Write Letters to Your Future Self</h1>
+        <p class="hero-subtitle">Capture your thoughts, dreams, and aspirations today, and receive them in the future.</p>
+        {% if not user.is_authenticated %}
+        <div class="hero-cta">
+            <a href="{% url 'register' %}" class="btn-primary">
+                <i class="fas fa-pen"></i>
+                Start Writing
+            </a>
+            <a href="{% url 'login' %}" class="btn-secondary">
+                <i class="fas fa-sign-in-alt"></i>
+                Sign In
+            </a>
+        </div>
+        {% else %}
+        <div class="hero-cta">
+            <a href="{% url 'write_letter' %}" class="btn-primary">
+                <i class="fas fa-pen"></i>
+                Write New Letter
+            </a>
+            <a href="{% url 'dashboard' %}" class="btn-secondary">
+                <i class="fas fa-envelope"></i>
+                My Letters
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-icon">
+            <i class="fas fa-envelope"></i>
+        </div>
+        <h3>Write Letters</h3>
+        <p>Compose heartfelt messages to your future self, capturing your current thoughts and aspirations.</p>
+    </div>
+
+    <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-icon">
+            <i class="fas fa-calendar-alt"></i>
+        </div>
+        <h3>Set Delivery Date</h3>
+        <p>Choose when you want to receive your letter - whether it's next month or years from now.</p>
+    </div>
+
+    <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-icon">
+            <i class="fas fa-bell"></i>
+        </div>
+        <h3>Get Notified</h3>
+        <p>Receive your letters at the perfect moment, bringing back memories and reflections.</p>
+    </div>
+</div>
+
+<div class="how-it-works">
+    <h2>How It Works</h2>
+    <div class="steps">
+        <div class="step" data-aos="fade-up" data-aos-delay="100">
+            <div class="step-number">1</div>
+            <h3>Create an Account</h3>
+            <p>Sign up for free and start your journey of self-reflection.</p>
+        </div>
+
+        <div class="step" data-aos="fade-up" data-aos-delay="200">
+            <div class="step-number">2</div>
+            <h3>Write Your Letter</h3>
+            <p>Express your thoughts, dreams, and goals for your future self.</p>
+        </div>
+
+        <div class="step" data-aos="fade-up" data-aos-delay="300">
+            <div class="step-number">3</div>
+            <h3>Set Delivery Date</h3>
+            <p>Choose when you want to receive your letter.</p>
+        </div>
+
+        <div class="step" data-aos="fade-up" data-aos-delay="400">
+            <div class="step-number">4</div>
+            <h3>Receive & Reflect</h3>
+            <p>Get your letter at the perfect moment and reflect on your journey.</p>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section" data-aos="fade-up">
+    <h2>Start Your Journey Today</h2>
+    <p>Join thousands of people who are writing letters to their future selves.</p>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'register' %}" class="btn-primary">
+        <i class="fas fa-user-plus"></i>
+        Create Free Account
+    </a>
+    {% else %}
+    <a href="{% url 'write_letter' %}" class="btn-primary">
+        <i class="fas fa-pen"></i>
+        Write a Letter Now
+    </a>
+    {% endif %}
+</div>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-primary {
+    background: white;
+    color: var(--primary-color);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.features-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto 4rem;
+}
+
+.feature-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    box-shadow: var(--box-shadow);
+    transition: all var(--transition-speed) ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+}
+
+.feature-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.how-it-works {
+    background: #f8f9fa;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.how-it-works h2 {
+    color: var(--primary-dark);
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.step {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    position: relative;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin: 0 auto 1rem;
+}
+
+.step h3 {
+    color: var(--primary-dark);
+    margin-bottom: 1rem;
+}
+
+.step p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.cta-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+}
+
+.cta-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.cta-section p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-section .btn-primary {
+    background: white;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    padding: 1rem 2.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .features-section {
+        padding: 1.5rem;
+    }
+
+    .how-it-works h2,
+    .cta-section h2 {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 3rem 1.5rem;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 0.875rem;
+    }
+
+    .features-section {
+        gap: 1.5rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
+    }
+
+    .how-it-works {
+        padding: 3rem 1.5rem;
+    }
+
+    .steps {
+        gap: 1.5rem;
+    }
+
+    .step {
+        padding: 1.5rem;
+    }
+
+    .cta-section {
+        padding: 3rem 1.5rem;
+    }
+
+    .cta-section p {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-section {
+        padding: 2rem 1rem;
+    }
+
+    .hero-content h1 {
+        font-size: 1.75rem;
+    }
+
+    .feature-card {
+        padding: 1.25rem;
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+    }
+
+    .how-it-works h2,
+    .cta-section h2 {
+        font-size: 1.75rem;
+    }
+
+    .step {
+        padding: 1.25rem;
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+    .btn-primary,
+    .btn-secondary,
+    .feature-card,
+    .step {
+        min-height: 44px;
+    }
+}
+</style>
+{% endblock %} 

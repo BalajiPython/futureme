@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Features - FutureMe{% endblock %}
+
+{% block content %}
+<div class="features-container">
+    <div class="features-hero" data-aos="fade-up">
+        <h1>Features That Make FutureMe Special</h1>
+        <p class="hero-subtitle">Discover how FutureMe helps you connect with your future self</p>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+            <div class="feature-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+            <h3>Write Letters</h3>
+            <p>Compose heartfelt messages to your future self, capturing your current thoughts and aspirations.</p>
+            <ul class="feature-list">
+                <li>Rich text editor</li>
+                <li>Auto-save functionality</li>
+                <li>Multiple letter drafts</li>
+            </ul>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+            <div class="feature-icon">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <h3>Flexible Delivery</h3>
+            <p>Choose exactly when you want to receive your letters, from days to years in the future.</p>
+            <ul class="feature-list">
+                <li>Custom delivery dates</li>
+                <li>Multiple delivery options</li>
+                <li>Delivery reminders</li>
+            </ul>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+            <div class="feature-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <h3>Smart Notifications</h3>
+            <p>Get timely reminders and notifications about your letters and deliveries.</p>
+            <ul class="feature-list">
+                <li>Email notifications</li>
+                <li>Delivery alerts</li>
+                <li>Custom notification preferences</li>
+            </ul>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+            <div class="feature-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3>Secure & Private</h3>
+            <p>Your letters are encrypted and stored securely, ensuring complete privacy.</p>
+            <ul class="feature-list">
+                <li>End-to-end encryption</li>
+                <li>Secure data storage</li>
+                <li>Privacy controls</li>
+            </ul>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+            <div class="feature-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <h3>Mobile Friendly</h3>
+            <p>Access your letters and manage your account from any device.</p>
+            <ul class="feature-list">
+                <li>Responsive design</li>
+                <li>Mobile-optimized interface</li>
+                <li>Cross-device sync</li>
+            </ul>
+        </div>
+
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+            <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <h3>Progress Tracking</h3>
+            <p>Monitor your personal growth and achievements over time.</p>
+            <ul class="feature-list">
+                <li>Goal tracking</li>
+                <li>Progress insights</li>
+                <li>Personal milestones</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="cta-section" data-aos="fade-up">
+        <h2>Ready to Start Your Journey?</h2>
+        <p>Join thousands of people who are writing letters to their future selves.</p>
+        <div class="cta-buttons">
+            <a href="{% url 'register' %}" class="btn-primary">
+                <i class="fas fa-user-plus"></i>
+                Create Free Account
+            </a>
+            <a href="{% url 'login' %}" class="btn-secondary">
+                <i class="fas fa-sign-in-alt"></i>
+                Sign In
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.features-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.features-hero {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.features-hero h1 {
+    color: var(--primary-dark);
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    color: #666;
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.feature-card {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    transition: all var(--transition-speed) ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.feature-card h3 {
+    color: var(--primary-dark);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.feature-card p {
+    color: #666;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+    text-align: center;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    padding: 0.5rem 0;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.feature-list li::before {
+    content: '•';
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.cta-section {
+    text-align: center;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    padding: 4rem 2rem;
+    border-radius: var(--border-radius);
+    color: white;
+}
+
+.cta-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.cta-section p {
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn-primary {
+    background: white;
+    color: var(--primary-color);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .features-hero h1 {
+        font-size: 2.25rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .features-grid {
+        gap: 1.5rem;
+    }
+
+    .feature-card {
+        padding: 1.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .features-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .features-hero {
+        margin-bottom: 3rem;
+    }
+
+    .features-hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1rem;
+    }
+
+    .feature-card {
+        padding: 1.5rem;
+    }
+
+    .feature-icon {
+        font-size: 2rem;
+    }
+
+    .feature-card h3 {
+        font-size: 1.25rem;
+    }
+
+    .cta-section {
+        padding: 3rem 1.5rem;
+    }
+
+    .cta-section h2 {
+        font-size: 1.75rem;
+    }
+
+    .cta-section p {
+        font-size: 1.1rem;
+    }
+
+    .btn-primary, .btn-secondary {
+        width: 100%;
+        justify-content: center;
+        padding: 0.875rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .features-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .feature-card {
+        padding: 1.25rem;
+    }
+
+    .feature-icon {
+        font-size: 1.75rem;
+    }
+
+    .feature-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .feature-list li {
+        font-size: 0.95rem;
+    }
+
+    .cta-section {
+        padding: 2rem 1rem;
+    }
+
+    .cta-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .cta-section p {
+        font-size: 1rem;
+    }
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+    .btn-primary,
+    .btn-secondary,
+    .feature-card {
+        min-height: 44px;
+    }
+}
+</style>
+{% endblock %} 
