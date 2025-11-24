@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: futureme
+    env: python
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DJANGO_SETTINGS_MODULE
+        value: futureme.settings
+      - key: DEBUG
+        value: false
+      - key: ALLOWED_HOSTS
+        value: futureme.onrender.com
+      - key: SECRET_KEY
+        generateValue: true
+
+databases:
+  - name: futureme-db
+    databaseName: futureme
+    user: futureme
+    plan: free 
