@@ -9,8 +9,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', 'False') == 'True'  # Default to False for safety
 
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
-# Format for .env: ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com,localhost
+# Allow all Render.com subdomains and localhost
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '*.onrender.com',  # Allow all render domains
+    'futureme-uwf5.onrender.com',  # Specific Render domain
+] + os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else [
+    'localhost',
+    '127.0.0.1',
+    '*.onrender.com',
+    'futureme-uwf5.onrender.com',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
