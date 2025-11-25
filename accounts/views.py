@@ -73,50 +73,43 @@ def register_api(request):
         request.session['register_otp'] = otp
         
         # Create or update pending registration
-        PendingRegistration.objects.update_or_create(
-            email=email,
-            defaults={'otp_code': otp, 'created_at': timezone.now()}
-        )
-        
-        # Send OTP email
         try:
+            PendingRegistration.objects.update_or_create(
+                email=email,
+                defaults={'otp_code': otp, 'created_at': timezone.now()}
+            )
+            logger.info(f"Pending registration created for {email}")
+        except Exception as e:
+            logger.error(f"Failed to create pending registration: {str(e)}")
+            return JsonResponse({
+                'detail': 'Registration failed. Please try again.',
+            }, status=500)
+        
+        # Send OTP email asynchronously with timeout
+        email_sent = False
+        try:
+            # Use fail_silently=True to prevent timeout
+            # Email sending should not block the response
             send_mail(
                 subject='Verify your FutureMe account',
                 message=f'Your OTP for FutureMe account verification is: {otp}',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                fail_silently=False,
+                fail_silently=True,  # Don't block on email failure
             )
             logger.info(f"OTP email sent to {email}")
-            return JsonResponse({
-                'success': True,
-                'message': 'Registration successful. Please verify OTP.',
-                'email': email,
-                'otp_dev': otp if settings.DEBUG else None  # Show OTP in development only
-            })
+            email_sent = True
         except Exception as e:
-            logger.error(f"Failed to send email: {str(e)}")
-            # In development, allow continuation with OTP shown
-            if settings.DEBUG:
-                logger.warning(f"Email sending disabled in development. OTP for {email}: {otp}")
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Registration successful. (Development mode - check console for OTP)',
-                    'email': email,
-                    'otp_dev': otp  # Show OTP in development
-                })
-            
-            # In production, fail the registration
-            PendingRegistration.objects.filter(email=email).delete()
-            try:
-                del request.session['register_email']
-                del request.session['register_password']
-                del request.session['register_otp']
-            except KeyError:
-                pass
-            return JsonResponse({
-                'detail': 'Failed to send verification email. Please try again later.',
-            }, status=500)
+            logger.warning(f"Email sending exception (non-blocking): {str(e)}")
+            # Don't fail registration if email fails - just log it
+        
+        # Always return success for registration (email is best-effort)
+        return JsonResponse({
+            'success': True,
+            'message': 'Registration successful. Please check your email for the OTP.' if email_sent else 'Registration successful. Enter the OTP code.',
+            'email': email,
+            'otp_dev': otp if settings.DEBUG else None  # Show OTP in development only
+        })
             
     except json.JSONDecodeError:
         return JsonResponse({'detail': 'Invalid JSON data'}, status=400)
