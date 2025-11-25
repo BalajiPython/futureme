@@ -489,6 +489,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (response.ok) {
                 // Store email for OTP verification page
                 localStorage.setItem('pending_verification_email', email);
+                
+                // If in development and OTP is provided, show it
+                if (data.otp_dev) {
+                    alert(`Development Mode\n\nYour OTP is: ${data.otp_dev}\n\nThis is shown only in development mode.`);
+                }
+                
                 // Navigate to OTP verification page with email parameter
                 window.location.href = `/accounts/verify-otp/?email=${encodeURIComponent(email)}`;
             } else {

@@ -87,22 +87,35 @@ def register_api(request):
                 recipient_list=[email],
                 fail_silently=False,
             )
+            logger.info(f"OTP email sent to {email}")
             return JsonResponse({
                 'success': True,
                 'message': 'Registration successful. Please verify OTP.',
-                'email': email
+                'email': email,
+                'otp_dev': otp if settings.DEBUG else None  # Show OTP in development only
             })
         except Exception as e:
             logger.error(f"Failed to send email: {str(e)}")
-            # Clean up the pending registration if email fails
+            # In development, allow continuation with OTP shown
+            if settings.DEBUG:
+                logger.warning(f"Email sending disabled in development. OTP for {email}: {otp}")
+                return JsonResponse({
+                    'success': True,
+                    'message': 'Registration successful. (Development mode - check console for OTP)',
+                    'email': email,
+                    'otp_dev': otp  # Show OTP in development
+                })
+            
+            # In production, fail the registration
             PendingRegistration.objects.filter(email=email).delete()
-            # Clear session data
-            del request.session['register_email']
-            del request.session['register_password']
-            del request.session['register_otp']
+            try:
+                del request.session['register_email']
+                del request.session['register_password']
+                del request.session['register_otp']
+            except KeyError:
+                pass
             return JsonResponse({
-                'detail': 'Failed to send verification email. Please try again.',
-                'error': str(e)
+                'detail': 'Failed to send verification email. Please try again later.',
             }, status=500)
             
     except json.JSONDecodeError:
