@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 import logging
 import os
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -9,8 +10,20 @@ class LettersConfig(AppConfig):
     name = 'letters'
 
     def ready(self):
-        # Only start scheduler in the main process (not in migrations, reloader, etc.)
+        # Skip scheduler initialization during:
+        # - Management commands (migrate, etc.)
+        # - Testing
+        # - Non-main processes
+        
+        if len(sys.argv) > 1 and sys.argv[1] in ['migrate', 'makemigrations', 'test', 'collectstatic']:
+            return
+            
         if os.environ.get('RUN_MAIN', None) != 'true':
+            return
+        
+        # Only start scheduler in production (Render) or when explicitly enabled
+        if os.getenv('DEBUG') == 'True':
+            logger.info("Running in DEBUG mode - scheduler disabled for local development")
             return
             
         try:
