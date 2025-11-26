@@ -49,73 +49,94 @@ def generate_otp():
 @csrf_exempt
 @require_http_methods(["POST"])
 def register_api(request):
+    """Register a new user with email and password"""
     try:
-        data = json.loads(request.body)
-        email = data.get('email')
-        password1 = data.get('password1')
-        password2 = data.get('password2')
+        # Parse JSON request body
+        try:
+            data = json.loads(request.body)
+            logger.info(f"Registration request received for email: {data.get('email')}")
+        except json.JSONDecodeError as e:
+            logger.error(f"JSON decode error: {str(e)}")
+            return JsonResponse({'detail': 'Invalid JSON format'}, status=400)
         
+        # Extract fields
+        email = data.get('email', '').strip().lower()
+        password1 = data.get('password1', '')
+        password2 = data.get('password2', '')
+        
+        # Validate inputs
         if not email or not password1 or not password2:
+            logger.warning(f"Missing fields - email: {bool(email)}, password1: {bool(password1)}, password2: {bool(password2)}")
             return JsonResponse({'detail': 'Email and password are required'}, status=400)
+        
+        # Validate email format
+        if '@' not in email or '.' not in email:
+            logger.warning(f"Invalid email format: {email}")
+            return JsonResponse({'detail': 'Invalid email format'}, status=400)
             
         if password1 != password2:
+            logger.warning(f"Passwords do not match for email: {email}")
             return JsonResponse({'detail': 'Passwords do not match'}, status=400)
         
         if User.objects.filter(email=email).exists():
+            logger.warning(f"Email already registered: {email}")
             return JsonResponse({'detail': 'Email already registered'}, status=400)
         
         # Generate OTP
         otp = generate_otp()
+        logger.info(f"Generated OTP for {email}: {otp}")
         
         # Store registration data in session
         request.session['register_email'] = email
         request.session['register_password'] = password1
         request.session['register_otp'] = otp
+        request.session.save()
+        logger.info(f"Session saved for {email}")
         
         # Create or update pending registration
         try:
-            PendingRegistration.objects.update_or_create(
+            pending, created = PendingRegistration.objects.update_or_create(
                 email=email,
                 defaults={'otp_code': otp, 'created_at': timezone.now()}
             )
-            logger.info(f"Pending registration created for {email}")
+            logger.info(f"Pending registration {'created' if created else 'updated'} for {email}")
         except Exception as e:
-            logger.error(f"Failed to create pending registration: {str(e)}")
+            logger.error(f"Failed to create pending registration for {email}: {str(e)}")
             return JsonResponse({
                 'detail': 'Registration failed. Please try again.',
             }, status=500)
         
-        # Send OTP email asynchronously with timeout
+        # Send OTP email (non-blocking)
         email_sent = False
         try:
-            # Use fail_silently=True to prevent timeout
-            # Email sending should not block the response
             send_mail(
                 subject='Verify your FutureMe account',
                 message=f'Your OTP for FutureMe account verification is: {otp}',
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[email],
-                fail_silently=True,  # Don't block on email failure
+                fail_silently=True,
             )
             logger.info(f"OTP email sent to {email}")
             email_sent = True
         except Exception as e:
-            logger.warning(f"Email sending exception (non-blocking): {str(e)}")
-            # Don't fail registration if email fails - just log it
+            logger.warning(f"Email sending failed for {email}: {str(e)}")
         
-        # Always return success for registration (email is best-effort)
-        return JsonResponse({
+        # Always return success
+        response_data = {
             'success': True,
-            'message': 'Registration successful. Please check your email for the OTP.' if email_sent else 'Registration successful. Enter the OTP code.',
+            'message': 'Registration successful. Please check your email for the OTP.',
             'email': email,
-            'otp_dev': otp if settings.DEBUG else None  # Show OTP in development only
-        })
+            'otp_dev': otp if settings.DEBUG else None
+        }
+        logger.info(f"Registration successful for {email}")
+        return JsonResponse(response_data, status=200)
             
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON decode error: {str(e)}")
         return JsonResponse({'detail': 'Invalid JSON data'}, status=400)
     except Exception as e:
-        logger.error(f'Registration error: {str(e)}')
-        return JsonResponse({'detail': str(e)}, status=500)
+        logger.error(f'Unexpected registration error: {str(e)}', exc_info=True)
+        return JsonResponse({'detail': f'Error: {str(e)}'}, status=500)
 
 @csrf_exempt
 @require_http_methods(["POST"])

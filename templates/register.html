@@ -509,7 +509,17 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             console.log('📥 Response status:', response.status);
-            const data = await response.json();
+            console.log('📥 Response headers:', response.headers);
+            
+            // Check if response is empty
+            const responseText = await response.text();
+            console.log('📥 Raw response text:', responseText);
+            
+            if (!responseText) {
+                throw new Error('Empty response from server');
+            }
+            
+            const data = JSON.parse(responseText);
             console.log('📥 Response data:', data);
             
             if (response.ok && data.success) {
@@ -546,10 +556,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorDiv.style.display = 'block';
             }
         } catch (error) {
-            console.error('❌ Network/Connection error:', error);
+            console.error('❌ Network/Parsing error:', error);
             submitBtn.disabled = false;
             submitStatus.style.display = 'none';
-            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> Connection error: ${error.message}. Please check your internet and try again.`;
+            errorDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> Error: ${error.message}. Please check your internet and try again.`;
             errorDiv.style.display = 'block';
         }
     });
